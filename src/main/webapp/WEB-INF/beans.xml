@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:cxf="http://cxf.apache.org/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+                        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+                        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+
+	<context:component-scan base-package="com.capstone.project" />
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/familydonations" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+	</bean>
+
+
+	<bean id="userDao" class="com.capstone.project.dao.UserDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="donarDao" class="com.capstone.project.donar.DonarDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="familyDao" class="com.capstone.project.family.FamilyDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="adminDao" class="com.capstone.project.admin.AdminDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<bean id="adminStatusDao" class="com.capstone.project.admin.status.AdminStatusDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<bean id="donationDao" class="com.capstone.project.donation.DonationDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	
+	<bean id="donationWishDao" class="com.capstone.project.donation.wish.DonationWishDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="wishSubmitDao" class="com.capstone.project.donation.wish.submit.WishSubmitDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="familyTransactionDao" class="com.capstone.project.family.transaction.FamilyTransactionDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="donarTransactionDao" class="com.capstone.project.donar.transaction.DonarTransactionDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="uservalidate" class="com.capstone.project.user.validate.UserValidation">
+		<property name="userDao" ref="userDao" />
+		<property name="donarDao" ref="donarDao" />
+		<property name="familyDao" ref="familyDao" />
+		<property name="adminDao" ref="adminDao" />
+		<property name="adminStatusDao" ref="adminStatusDao" />
+		<property name="donationDao" ref="donationDao" />
+		<property name="donationWishDao" ref="donationWishDao" />
+		<property name="wishSubmitDao" ref="wishSubmitDao" />
+		<property name="familyTransactionDao" ref="familyTransactionDao" />
+		<property name="donarTransactionDao" ref="donarTransactionDao" />
+	</bean>
+
+	<jaxrs:server id="user" address="/userservice">
+		<jaxrs:serviceBeans>
+			<ref bean="uservalidate" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<bean id="jacksonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:server>
+
+</beans>
